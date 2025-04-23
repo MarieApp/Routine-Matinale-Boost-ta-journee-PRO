@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routine Matinale - Boost ta journée Pro - 30 Minutes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .routine-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .routine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .gratitude-input {
+            min-height: 100px;
+        }
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-blue-50 to-teal-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-teal-700 mb-4">Routine Matinale pour Entrepreneur</h1>
+            <p class="text-xl text-gray-600">Votre routine de 30 minutes pour une journée productive et équilibrée</p>
+        </header>
+
+        <!-- Timer and Navigation Controls -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h2 class="text-2xl font-semibold text-teal-600 mb-4 md:mb-0">Minuteur de Routine</h2>
+                <div class="flex space-x-4">
+                    <button id="startBtn" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors no-print">
+                        <i class="fas fa-play mr-2"></i> Démarrer
+                    </button>
+                    <button id="pauseBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition-colors hidden no-print">
+                        <i class="fas fa-pause mr-2"></i> Pause
+                    </button>
+                    <button id="resetBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors no-print">
+                        <i class="fas fa-redo-alt mr-2"></i> Réinitialiser
+                    </button>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="progressBar" class="bg-teal-600 h-4 rounded-full progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-sm text-gray-600">
+                    <span>0 min</span>
+                    <span>15 min</span>
+                    <span>30 min</span>
+                </div>
+            </div>
+
+            <div class="flex justify-center mb-4">
+                <div id="timer" class="text-4xl font-bold text-teal-700">30:00</div>
+            </div>
+
+            <div id="currentActivity" class="text-center text-lg font-medium text-gray-700 mb-4">
+                Prêt à commencer votre routine d'entrepreneur
+            </div>
+
+            <!-- Step Navigation -->
+            <div class="flex justify-center space-x-4 no-print">
+                <button id="prevStepBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors disabled:opacity-50">
+                    <i class="fas fa-arrow-left mr-2"></i> Étape précédente
+                </button>
+                <button id="nextStepBtn" class="bg-teal-100 hover:bg-teal-200 text-teal-700 px-4 py-2 rounded-lg transition-colors">
+                    Étape suivante <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="step-indicators flex justify-center mb-8 no-print">
+            <div class="flex space-x-2">
+                <button class="step-indicator w-24 py-1 text-sm rounded-full bg-teal-600 text-white" data-step="0">Gratitude</button>
+                <button class="step-indicator w-24 py-1 text-sm rounded-full bg-gray-300 text-gray-700" data-step="1">Préparation</button>
+                <button class="step-indicator w-24 py-1 text-sm rounded-full bg-gray-300 text-gray-700" data-step="2">Planification</button>
+                <button class="step-indicator w-24 py-1 text-sm rounded-full bg-gray-300 text-gray-700" data-step="3">Rituel Pro</button>
+            </div>
+        </div>
+
+        <div class="routine-container">
+            <!-- Étape 1: Gratitude -->
+            <div id="step1" class="step active">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-600 mb-4">Étape 1: Pratique de Gratitude (7 minutes)</h2>
+                    <p class="mb-4 text-gray-700">Commencez votre journée avec reconnaissance et intention positive, pour ancrer votre esprit dans l'abondance plutôt que dans le manque.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="routine-card bg-blue-50 rounded-lg p-4 border-l-4 border-blue-400">
+                            <h3 class="font-bold text-blue-700 mb-2">Journal de Gratitude (3 min)</h3>
+                            <p class="text-gray-700 mb-3">Notez 3 choses pour lesquelles vous êtes reconnaissant aujourd'hui. Peuvent être personnelles ou professionnelles.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <textarea class="gratitude-input w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Je suis reconnaissant(e) pour..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="routine-card bg-green-50 rounded-lg p-4 border-l-4 border-green-400">
+                            <h3 class="font-bold text-green-700 mb-2">Réussite d'Hier (2 min)</h3>
+                            <p class="text-gray-700 mb-3">Identifiez une réussite professionnelle d'hier, même minime, et célébrez-la.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <textarea class="gratitude-input w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Hier, j'ai réussi à..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="routine-card bg-purple-50 rounded-lg p-4 border-l-4 border-purple-400 mt-6">
+                        <h3 class="font-bold text-purple-700 mb-2">Intention du Jour (2 min)</h3>
+                        <p class="text-gray-700 mb-3">Fixez une intention claire pour votre journée. Comment souhaitez-vous vous sentir et agir aujourd'hui?</p>
+                        <div class="bg-white p-3 rounded border border-gray-200">
+                            <textarea class="gratitude-input w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-300" placeholder="Aujourd'hui, mon intention est de..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                        <h3 class="font-bold text-yellow-700 mb-2">Conseil:</h3>
+                        <p class="text-gray-700">La gratitude activée chaque matin recâble progressivement votre cerveau pour repérer les opportunités plutôt que les obstacles. Les entrepreneurs qui pratiquent la gratitude quotidiennement rapportent une meilleure résilience face aux défis et une capacité accrue à prendre des décisions stratégiques.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Étape 2: Préparation physique et mentale -->
+            <div id="step2" class="step">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-600 mb-4">Étape 2: Préparation Corps & Esprit (8 minutes)</h2>
+                    <p class="mb-4 text-gray-700">Préparez votre corps et votre esprit pour une journée de haute performance avec des exercices ciblés qui stimulent l'énergie, la clarté mentale et la créativité.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="routine-card bg-orange-50 rounded-lg p-4 border-l-4 border-orange-400">
+                            <h3 class="font-bold text-orange-700 mb-2">Hydratation Stratégique (1 min)</h3>
+                            <p class="text-gray-700">Commencez par un grand verre d'eau pour réveiller votre métabolisme et votre cerveau.</p>
+                            <ul class="mt-2 list-disc list-inside text-gray-600 text-sm">
+                                <li>300ml d'eau à température ambiante</li>
+                                <li>Optionnel: ajoutez une pincée de sel de l'Himalaya pour les électrolytes</li>
+                                <li>Buvez lentement et consciemment</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="routine-card bg-red-50 rounded-lg p-4 border-l-4 border-red-400">
+                            <h3 class="font-bold text-red-700 mb-2">Activation Corporelle (3 min)</h3>
+                            <p class="text-gray-700">Série d'exercices rapides pour activer votre système circulatoire et énergétique.</p>
+                            <ol class="mt-2 list-decimal list-inside text-gray-600 text-sm">
+                                <li>20 jumping jacks pour faire circuler le sang</li>
+                                <li>10 squats pour activer les grandes chaînes musculaires</li>
+                                <li>10 rotations des épaules vers l'arrière pour libérer les tensions</li>
+                                <li>5 grandes respirations abdominales, bras levés</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="routine-card bg-teal-50 rounded-lg p-4 border-l-4 border-teal-400">
+                            <h3 class="font-bold text-teal-700 mb-2">Clarté Mentale (2 min)</h3>
+                            <p class="text-gray-700">Pratique de respiration pour calmer le mental et améliorer la concentration.</p>
+                            <ol class="mt-2 list-decimal list-inside text-gray-600 text-sm">
+                                <li>Asseyez-vous confortablement, dos droit</li>
+                                <li>Respirez par le nez pendant 4 secondes</li>
+                                <li>Retenez pendant 2 secondes</li>
+                                <li>Expirez lentement pendant 6 secondes</li>
+                                <li>Répétez 7 fois en visualisant vos objectifs du jour</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="routine-card bg-indigo-50 rounded-lg p-4 border-l-4 border-indigo-400">
+                            <h3 class="font-bold text-indigo-700 mb-2">Stimulation de la Créativité (2 min)</h3>
+                            <p class="text-gray-700">Exercice pour activer le cerveau droit et favoriser les insights.</p>
+                            <ol class="mt-2 list-decimal list-inside text-gray-600 text-sm">
+                                <li>Prenez un papier et un stylo</li>
+                                <li>Écrivez une question liée à un défi actuel</li>
+                                <li>Dessinez ou griffonnez librement pendant une minute</li>
+                                <li>Notez rapidement 3 idées qui vous viennent à l'esprit</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                        <h3 class="font-bold text-yellow-700 mb-2">Point scientifique:</h3>
+                        <p class="text-gray-700">Les études montrent que les entrepreneurs qui pratiquent l'activation physique et mentale le matin sont 31% plus productifs et prennent de meilleures décisions. Ces exercices stimulent la production de BDNF, une protéine essentielle à la neuroplasticité et à la pensée innovante.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Étape 3: Planification stratégique -->
+            <div id="step3" class="step">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-600 mb-4">Étape 3: Planification Stratégique (10 minutes)</h2>
+                    <p class="mb-4 text-gray-700">Structurez votre journée de manière stratégique pour maximiser votre productivité et votre impact entrepreneurial.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="routine-card bg-blue-50 rounded-lg p-4 border-l-4 border-blue-400">
+                            <h3 class="font-bold text-blue-700 mb-2">Tâche à Impact Maximal (2 min)</h3>
+                            <p class="text-gray-700 mb-3">Identifiez LA tâche qui fera le plus avancer votre entreprise aujourd'hui.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <textarea class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="Ma tâche à impact maximal est..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="routine-card bg-green-50 rounded-lg p-4 border-l-4 border-green-400">
+                            <h3 class="font-bold text-green-700 mb-2">Les 3 Priorités (3 min)</h3>
+                            <p class="text-gray-700 mb-3">Outre votre tâche principale, listez 3 autres priorités importantes.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <div class="mb-2">
+                                    <span class="inline-block w-6 h-6 rounded-full bg-green-200 text-green-700 text-center font-bold mr-2">1</span>
+                                    <input type="text" class="w-10/12 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Priorité 1">
+                                </div>
+                                <div class="mb-2">
+                                    <span class="inline-block w-6 h-6 rounded-full bg-green-200 text-green-700 text-center font-bold mr-2">2</span>
+                                    <input type="text" class="w-10/12 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Priorité 2">
+                                </div>
+                                <div>
+                                    <span class="inline-block w-6 h-6 rounded-full bg-green-200 text-green-700 text-center font-bold mr-2">3</span>
+                                    <input type="text" class="w-10/12 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Priorité 3">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="routine-card bg-purple-50 rounded-lg p-4 border-l-4 border-purple-400">
+                            <h3 class="font-bold text-purple-700 mb-2">Blocage de Temps (3 min)</h3>
+                            <p class="text-gray-700 mb-3">Planifiez quand vous allez accomplir ces tâches prioritaires.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <div class="mb-2">
+                                    <span class="font-bold mr-2">Tâche à impact maximal:</span>
+                                    <input type="text" class="w-1/3 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-purple-300" placeholder="8h-10h">
+                                </div>
+                                <div class="mb-2">
+                                    <span class="font-bold mr-2">Priorité 1:</span>
+                                    <input type="text" class="w-1/3 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-purple-300" placeholder="10h30-11h30">
+                                </div>
+                                <div class="mb-2">
+                                    <span class="font-bold mr-2">Priorité 2:</span>
+                                    <input type="text" class="w-1/3 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-purple-300" placeholder="14h-15h">
+                                </div>
+                                <div>
+                                    <span class="font-bold mr-2">Priorité 3:</span>
+                                    <input type="text" class="w-1/3 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-purple-300" placeholder="16h-17h">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="routine-card bg-pink-50 rounded-lg p-4 border-l-4 border-pink-400">
+                            <h3 class="font-bold text-pink-700 mb-2">Anticipation des Obstacles (2 min)</h3>
+                            <p class="text-gray-700 mb-3">Identifiez les obstacles potentiels et préparez des solutions.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <div class="mb-2">
+                                    <span class="font-bold block mb-1">Obstacle potentiel:</span>
+                                    <input type="text" class="w-full p-1 border rounded focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Ex: Interruptions fréquentes">
+                                </div>
+                                <div>
+                                    <span class="font-bold block mb-1">Solution préparée:</span>
+                                    <input type="text" class="w-full p-1 border rounded focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Ex: Bloquer 2h en mode 'ne pas déranger'">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                        <h3 class="font-bold text-yellow-700 mb-2">Conseil d'expert:</h3>
+                        <p class="text-gray-700">L'entrepreneur de haut niveau planifie stratégiquement, pas seulement tactiquement. Avant chaque semaine, passez 30 minutes à aligner vos tâches quotidiennes avec vos objectifs trimestriels. Selon une étude de Harvard Business Review, cette pratique peut augmenter votre productivité jusqu'à 43% et réduire votre stress de 29%.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Étape 4: Rituel professionnel -->
+            <div id="step4" class="step">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-600 mb-4">Étape 4: Rituel Professionnel (5 minutes)</h2>
+                    <p class="mb-4 text-gray-700">Terminez votre routine par des pratiques qui vous préparent mentalement à entrer dans votre rôle d'entrepreneur avec confiance et focus.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="routine-card bg-indigo-50 rounded-lg p-4 border-l-4 border-indigo-400">
+                            <h3 class="font-bold text-indigo-700 mb-2">Vision de Succès (2 min)</h3>
+                            <p class="text-gray-700 mb-3">Visualisez-vous accomplissant avec excellence votre tâche à impact maximal.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <p class="text-sm text-gray-600 mb-2">Fermez les yeux et imaginez en détail:</p>
+                                <ul class="list-disc list-inside text-gray-600 text-sm">
+                                    <li>Vous-même, concentré et efficace pendant la tâche</li>
+                                    <li>Les obstacles surmontés avec aisance</li>
+                                    <li>Le résultat positif et ses impacts</li>
+                                    <li>La satisfaction que vous ressentez</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="routine-card bg-red-50 rounded-lg p-4 border-l-4 border-red-400">
+                            <h3 class="font-bold text-red-700 mb-2">Ancrage d'État (1 min)</h3>
+                            <p class="text-gray-700 mb-3">Créez un déclencheur physique pour entrer dans votre état optimal de performance.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <p class="text-sm text-gray-600 mb-2">Choisissez un geste simple (exemples):</p>
+                                <ul class="list-disc list-inside text-gray-600 text-sm">
+                                    <li>Joindre le pouce et l'index en respirant profondément</li>
+                                    <li>Se tenir droit et poser les mains sur les hanches (posture de pouvoir)</li>
+                                    <li>Frapper légèrement dans ses mains puis se frotter les paumes</li>
+                                </ul>
+                                <p class="text-sm text-gray-600 mt-2">Effectuez ce geste en pensant: "Je suis prêt(e) à performer à mon meilleur niveau."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="routine-card bg-teal-50 rounded-lg p-4 border-l-4 border-teal-400 md:col-span-2">
+                            <h3 class="font-bold text-teal-700 mb-2">Déclaration d'Entrepreneur (2 min)</h3>
+                            <p class="text-gray-700 mb-3">Lisez à haute voix votre déclaration personnelle pour ancrer votre identité d'entrepreneur.</p>
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <textarea class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-300 min-h-[120px]" placeholder="Je suis un entrepreneur déterminé et focalisé. Aujourd'hui, je crée de la valeur pour mes clients, je prends des décisions alignées avec ma vision, et je fais progresser mon entreprise étape par étape. Je suis résilient face aux défis et je transforme les obstacles en opportunités. Je suis prêt à diriger avec clarté et à avoir un impact positif."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-400">
+                        <h3 class="font-bold text-yellow-700 mb-2">Note d'impact:</h3>
+                        <p class="text-gray-700">Les rituels de clôture de routine sont particulièrement puissants pour les entrepreneurs. Ils créent une transition psychologique claire entre votre préparation et votre mode d'exécution. Les neurosciences démontrent que ces rituels activent les circuits cérébraux associés à la concentration et à la performance, facilitant ainsi l'entrée dans un état de flow productif.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div id="conclusion" class="step">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-teal-600 mb-4">Félicitations !</h2>
+                    <p class="mb-4 text-gray-700">Vous avez terminé votre routine matinale d'entrepreneur de 30 minutes. Vous êtes maintenant préparé mentalement, physiquement et stratégiquement pour une journée de haute performance.</p>
+                    
+                    <div class="p-5 bg-teal-50 rounded-lg border-l-4 border-teal-400 mb-6">
+                        <h3 class="font-bold text-teal-700 mb-2">Conseils pour prolonger les bienfaits:</h3>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li>Revisitez votre liste de priorités à la mi-journée pour rester aligné</li>
+                            <li>Faites une pause de 5 minutes toutes les 90 minutes pour maintenir votre énergie</li>
+                            <li>Utilisez votre geste d'ancrage avant chaque tâche importante</li>
+                            <li>Buvez régulièrement de l'eau tout au long de la journée</li>
+                            <li>Terminez votre journée par une brève réflexion sur vos réussites</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="restartBtn" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg transition-colors text-lg no-print">
+                            <i class="fas fa-redo mr-2"></i> Recommencer la routine
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer with brand -->
+        <footer class="text-center py-6 border-t mt-10">
+            <p class="text-gray-600">
+                <span class="font-semibold text-teal-700">Ai-Me | Au Pays de Marie</span>
+            </p>
+            <p class="text-sm text-gray-500 mt-1">Votre compagnon de développement personnel et professionnel</p>
+        </footer>
+    </div>
+
+    <script>
+        // Éléments DOM
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const prevStepBtn = document.getElementById('prevStepBtn');
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const timerEl = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const currentActivity = document.getElementById('currentActivity');
+        const stepIndicators = document.querySelectorAll('.step-indicator');
+        
+        // Étapes de la routine
+        const steps = [
+            document.getElementById('step1'),
+            document.getElementById('step2'),
+            document.getElementById('step3'),
+            document.getElementById('step4'),
+            document.getElementById('conclusion')
+        ];
+        
+        // Configuration du temps
+        const totalTime = 30 * 60; // 30 minutes en secondes
+        const stepTimes = [7 * 60, 8 * 60, 10 * 60, 5 * 60]; // Temps par étape en secondes
+        let remainingTime = totalTime;
+        let timerInterval;
+        let isRunning = false;
+        let currentStep = 0;
+        
+        // Fonctions
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function updateProgressBar() {
+            const progress = 100 - (remainingTime / totalTime * 100);
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        function updateCurrentStep() {
+            let elapsedTime = totalTime - remainingTime;
+            let stepTime = 0;
+            
+            for (let i = 0; i < stepTimes.length; i++) {
+                stepTime += stepTimes[i];
+                if (elapsedTime < stepTime) {
+                    if (currentStep !== i) {
+                        currentStep = i;
+                        showStep(currentStep);
+                        updateStepIndicators();
+                    }
+                    return;
+                }
+            }
+            
+            if (currentStep !== 4) {
+                currentStep = 4;
+                showStep(currentStep);
+                updateStepIndicators();
+            }
+        }
+        
+        function showStep(stepIndex) {
+            steps.forEach((step, index) => {
+                if (index === stepIndex) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            // Mettre à jour le texte de l'activité en cours
+            switch(stepIndex) {
+                case 0:
+                    currentActivity.textContent = "Pratique de Gratitude: Reconnaissez vos bénédictions et fixez vos intentions";
+                    break;
+                case 1:
+                    currentActivity.textContent = "Préparation Corps & Esprit: Activez votre énergie et votre clarté mentale";
+                    break;
+                case 2:
+                    currentActivity.textContent = "Planification Stratégique: Organisez votre journée pour un impact maximal";
+                    break;
+                case 3:
+                    currentActivity.textContent = "Rituel Professionnel: Ancrez votre mentalité d'entrepreneur performant";
+                    break;
+                case 4:
+                    currentActivity.textContent = "Félicitations ! Vous êtes prêt pour une journée productive et équilibrée";
+                    stopTimer();
+                    break;
+            }
+            
+            // Update navigation buttons
+            prevStepBtn.disabled = stepIndex === 0;
+            nextStepBtn.disabled = stepIndex === 4;
+        }
+        
+        function updateStepIndicators() {
+            stepIndicators.forEach((indicator, index) => {
+                if (index === currentStep && currentStep < 4) {
+                    indicator.classList.remove('bg-gray-300', 'text-gray-700');
+                    indicator.classList.add('bg-teal-600', 'text-white');
+                } else {
+                    indicator.classList.remove('bg-teal-600', 'text-white');
+                    indicator.classList.add('bg-gray-300', 'text-gray-700');
+                }
+            });
+        }
+        
+        function goToStep(stepIndex) {
+            if (stepIndex < 0) stepIndex = 0;
+            if (stepIndex > 4) stepIndex = 4;
+            
+            currentStep = stepIndex;
+            showStep(currentStep);
+            updateStepIndicators();
+        }
+        
+        function startTimer() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            startBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            
+            timerInterval = setInterval(() => {
+                if (remainingTime > 0) {
+                    remainingTime--;
+                    updateTimerDisplay(remainingTime);
+                    updateProgressBar();
+                    updateCurrentStep();
+                } else {
+                    stopTimer();
+                    showStep(4); // Afficher la conclusion
+                    updateStepIndicators();
+                }
+            }, 1000);
+        }
+        
+        function pauseTimer() {
+            if (!isRunning) return;
+            
+            isRunning = false;
+            clearInterval(timerInterval);
+            startBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+        }
+        
+        function stopTimer() {
+            pauseTimer();
+            startBtn.classList.add('hidden');
+        }
+        
+        function resetTimer() {
+            pauseTimer();
+            remainingTime = totalTime;
+            updateTimerDisplay(remainingTime);
+            progressBar.style.width = '0%';
+            currentStep = 0;
+            showStep(currentStep);
+            updateStepIndicators();
+            currentActivity.textContent = "Prêt à commencer votre routine d'entrepreneur";
+            startBtn.classList.remove('hidden');
+        }
+        
+        // Écouteurs d'événements
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        restartBtn.addEventListener('click', resetTimer);
+        prevStepBtn.addEventListener('click', () => goToStep(currentStep - 1));
+        nextStepBtn.addEventListener('click', () => goToStep(currentStep + 1));
+        
+        // Navigation via indicateurs d'étape
+        stepIndicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                if (index < 4) { // Ne pas permettre de cliquer directement sur la conclusion
+                    goToStep(index);
+                }
+            });
+        });
+        
+        // Initialisation
+        updateTimerDisplay(remainingTime);
+        prevStepBtn.disabled = true;
+    </script>
+</body>
+</html>
